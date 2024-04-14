@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App de Análisis de Calidad del Aire</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>App de Análisis de Calidad del Aire</h1>
+    </header>
+    
+    <main>
+        <form id="air-form" method="post">
+            <label for="feature">Introduce la concentración de NO2 (GT):</label>
+            <input type="number" id="feature" name="feature" step="any" required>
+            <button type="submit">Analizar</button>
+        </form>
+        
+        <div id="result-container">
+            <!-- Aquí se mostrará el resultado -->
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 App de Análisis de Calidad del Aire. Todos los derechos reservados.</p>
+    </footer>
+</div>
+
+<script>
+document.getElementById('air-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    var form = this;
+    var formData = new FormData(form);
+    
+    fetch('/predict', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('result-container').innerHTML = `<p>La calidad del aire es: <strong>${data.prediction}</strong></p>`;
+        form.reset();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+</script>
+
+</body>
+</html>
